@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bienvenue, humain·e</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap">
+<style>
+:root{
+  --bg:#fff1b8;--ink:#1d0f3c;--card:#ffffff;
+  --pink:#ff3d8b;--yellow:#ffd60a;--cyan:#00c8ff;--purple:#7b2fff;--green:#25d99a;--orange:#ff8a00;
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--bg:#1a0b3b;--ink:#fff4d6;--card:#2b1561;color-scheme:dark}
+}
+:root[data-theme="dark"]{--bg:#1a0b3b;--ink:#fff4d6;--card:#2b1561;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{
+  margin:0;min-height:100vh;background:var(--bg);color:var(--ink);
+  font-family:"Fredoka","Trebuchet MS","Comic Sans MS",system-ui,sans-serif;
+  line-height:1.4;overflow-x:hidden;
+}
+.blob{position:fixed;border-radius:50%;z-index:0;pointer-events:none}
+.b1{width:46vmax;height:46vmax;background:var(--pink);top:-18vmax;left:-14vmax}
+.b2{width:38vmax;height:38vmax;background:var(--cyan);bottom:-14vmax;right:-10vmax}
+.b3{width:22vmax;height:22vmax;background:var(--yellow);top:38%;right:-8vmax}
+.b4{width:18vmax;height:18vmax;background:var(--purple);bottom:12%;left:-7vmax}
+
+main{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:40px 20px 60px;transition:filter .6s}
+main.locked{filter:blur(12px) saturate(1.2);pointer-events:none;user-select:none}
+h1{font-size:clamp(2.2rem,9vw,4rem);line-height:1.05;margin:0 0 12px;font-weight:700;
+  text-shadow:3px 3px 0 var(--pink),6px 6px 0 var(--cyan)}
+.lead{font-size:1.2rem;max-width:34ch;margin:0 0 28px}
+.links{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.links a{display:block;padding:20px;border:4px solid var(--ink);border-radius:24px;
+  box-shadow:6px 6px 0 var(--ink);color:#1d0f3c;text-decoration:none;font-size:1.5rem;font-weight:700}
+.links a small{display:block;font-size:1rem;font-weight:400;margin-top:4px}
+.links a:focus-visible,button:focus-visible{outline:4px solid var(--ink);outline-offset:3px}
+.links a:nth-child(1){background:var(--yellow)}
+.links a:nth-child(2){background:var(--green)}
+.links a:nth-child(3){background:var(--orange)}
+
+#gate{position:fixed;inset:0;z-index:5;display:grid;place-items:center;padding:16px;
+  padding-top:calc(16px + env(safe-area-inset-top,0px));padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));overflow-y:auto}
+#gate[hidden]{display:none}
+.card{width:min(100%,420px);background:var(--card);border:4px solid var(--ink);border-radius:28px;
+  box-shadow:10px 10px 0 var(--ink);overflow:hidden}
+.band{padding:16px 20px;background:linear-gradient(90deg,var(--pink),var(--orange),var(--yellow),var(--green),var(--cyan),var(--purple));
+  border-bottom:4px solid var(--ink);color:#1d0f3c}
+.band h2{margin:0;font-size:1.6rem;font-weight:700}
+.band p{margin:2px 0 0;font-size:1rem}
+.body{padding:20px}
+.robot{display:flex;align-items:center;gap:14px;width:100%;padding:14px;background:var(--bg);color:var(--ink);
+  border:4px solid var(--ink);border-radius:20px;font:inherit;font-size:1.15rem;font-weight:600;cursor:pointer;text-align:left}
+.box{flex:none;width:40px;height:40px;border:4px solid var(--ink);border-radius:12px;background:var(--card);
+  display:grid;place-items:center;font-size:1.5rem}
+.robot .mascot{margin-left:auto;font-size:2rem;animation:wob 1.4s ease-in-out infinite}
+.robot.spin .box{animation:spin .5s}
+@keyframes wob{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(12deg) scale(1.15)}}
+@keyframes spin{to{transform:rotate(360deg) scale(1.2)}}
+
+#step2[hidden]{display:none}
+.prompt{margin:0 0 12px;font-size:1.3rem;font-weight:700}
+.prompt span{background:var(--yellow);color:#1d0f3c;padding:0 8px;border-radius:10px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.tile{position:relative;aspect-ratio:1;border:4px solid var(--ink);border-radius:20px;
+  font-size:clamp(2.2rem,12vw,3.2rem);line-height:1;cursor:pointer;display:grid;place-items:center;
+  transition:transform .15s}
+.tile:nth-child(6n+1){background:var(--pink)}
+.tile:nth-child(6n+2){background:var(--cyan)}
+.tile:nth-child(6n+3){background:var(--yellow)}
+.tile:nth-child(6n+4){background:var(--green)}
+.tile:nth-child(6n+5){background:var(--orange)}
+.tile:nth-child(6n){background:var(--purple)}
+.tile:hover{transform:rotate(-5deg) scale(1.05)}
+.tile[aria-pressed="true"]{transform:scale(.88) rotate(4deg);box-shadow:inset 0 0 0 5px var(--card)}
+.tile[aria-pressed="true"]::after{content:"✔";position:absolute;top:-10px;right:-10px;width:30px;height:30px;
+  border-radius:50%;background:var(--ink);color:var(--card);font-size:1rem;display:grid;place-items:center}
+.go{margin-top:16px;width:100%;padding:14px;border:4px solid var(--ink);border-radius:20px;background:var(--pink);
+  color:#1d0f3c;font:inherit;font-size:1.25rem;font-weight:700;cursor:pointer;box-shadow:5px 5px 0 var(--ink)}
+a.go{display:block;text-align:center;text-decoration:none;background:var(--green)}
+a.go[hidden],.go[hidden]{display:none}
+.go:active{transform:translate(3px,3px);box-shadow:2px 2px 0 var(--ink)}
+.msg{min-height:1.6em;margin:12px 0 0;font-weight:600;text-align:center}
+.shake{animation:shake .4s}
+@keyframes shake{20%{transform:translateX(-10px)}40%{transform:translateX(10px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+
+.conf{position:fixed;top:-40px;z-index:9;font-size:1.8rem;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+<noscript><style>main.locked{filter:none;pointer-events:auto}#gate{display:none}</style></noscript>
+</head>
+<body>
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="blob b4"></div>
+
+<main id="page" class="locked">
+  <h1 tabindex="-1">Bienvenue, humain·e !</h1>
+  <p class="lead">Tu as prouvé que tu n’es pas un robot. Entre, la maison est à toi.</p>
+  <nav class="links">
+    <a href="#">Photos<small>Les souvenirs en couleur</small></a>
+    <a href="#">Projets<small>Ce qui est en cours</small></a>
+    <a href="#">Contact<small>Dis bonjour</small></a>
+  </nav>
+</main>
+
+<div id="gate" role="dialog" aria-modal="true" aria-labelledby="t">
+  <div class="card">
+    <div class="band">
+      <h2 id="t">Stop ! Es-tu un robot ?</h2>
+      <p>Un petit test, promis, c’est rigolo.</p>
+    </div>
+    <div class="body">
+      <button class="robot" id="check" type="button">
+        <span class="box" id="box" aria-hidden="true"></span>
+        Je ne suis pas un robot
+        <span class="mascot" aria-hidden="true">🤖</span>
+      </button>
+      <div id="step2" hidden>
+        <p class="prompt">Clique sur <span>tous les animaux</span></p>
+        <div class="grid" id="grid"></div>
+        <button class="go" id="go" type="button">Vérifier</button>
+        <a class="go" id="next" href="index2.html" hidden>Continuer</a>
+      </div>
+      <p class="msg" id="msg" aria-live="polite"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+var ANIMALS=[["🐶","un chien"],["🐱","un chat"],["🐸","une grenouille"],["🦄","une licorne"],["🐙","une pieuvre"],["🦊","un renard"],["🐼","un panda"],["🐵","un singe"],["🦆","un canard"],["🐢","une tortue"]];
+var OBJECTS=[["🍕","une pizza"],["🚀","une fusée"],["🎸","une guitare"],["🌵","un cactus"],["🧦","une chaussette"],["🍩","un donut"],["⚽","un ballon"],["🎩","un chapeau"],["🛸","une soucoupe"],["🍄","un champignon"]];
+var $=function(i){return document.getElementById(i)};
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+
+function newGrid(){
+  var nA=3+Math.floor(Math.random()*2);
+  var items=shuffle(ANIMALS.slice()).slice(0,nA).map(function(x){return{e:x[0],n:x[1],a:true}})
+    .concat(shuffle(OBJECTS.slice()).slice(0,9-nA).map(function(x){return{e:x[0],n:x[1],a:false}}));
+  shuffle(items);
+  var g=$("grid");g.innerHTML="";
+  items.forEach(function(it){
+    var b=document.createElement("button");
+    b.type="button";b.className="tile";b.textContent=it.e;
+    b.setAttribute("aria-label",it.n);b.setAttribute("aria-pressed","false");
+    b._a=it.a;
+    b.onclick=function(){b.setAttribute("aria-pressed",b.getAttribute("aria-pressed")==="true"?"false":"true")};
+    g.appendChild(b);
+  });
+}
+
+function confetti(){
+  var em=["🎉","🎊","⭐","🌈","🍬","✨","🎈"];
+  for(var i=0;i<50;i++){
+    var s=document.createElement("span");
+    s.className="conf";s.textContent=em[i%em.length];
+    s.style.left=Math.random()*100+"vw";
+    s.style.animationDuration=(2+Math.random()*2)+"s";
+    s.style.animationDelay=(Math.random()*.8)+"s";
+    document.body.appendChild(s);
+    setTimeout(function(n){return function(){n.remove()}}(s),5000);
+  }
+}
+
+$("check").onclick=function(){
+  this.classList.add("spin");
+  $("box").textContent="✔";
+  $("msg").textContent="";
+  setTimeout(function(){
+    $("check").hidden=true;
+    $("step2").hidden=false;
+    newGrid();
+  },600);
+};
+
+$("go").onclick=function(){
+  var tiles=Array.prototype.slice.call(document.querySelectorAll(".tile"));
+  var ok=tiles.every(function(t){return (t.getAttribute("aria-pressed")==="true")===t._a});
+  var card=document.querySelector(".card");
+  if(ok){
+    $("msg").textContent="Bravo, humain·e confirmé·e !";
+    confetti();
+    tiles.forEach(function(t){t.disabled=true});
+    $("go").hidden=true;
+    $("next").hidden=false;
+    $("next").focus();
+  }else{
+    $("msg").textContent="Raté ! Un robot aurait trouvé. Réessaie.";
+    card.classList.remove("shake");void card.offsetWidth;card.classList.add("shake");
+    newGrid();
+  }
+};
+</script>
+</body>
+</html>
